@@ -18,10 +18,15 @@ const onFocusStyle = { borderColor: "#FF6C00", color: "#212121", backgroundColor
 const onBlurStyle = { borderColor: "#E8E8E8", color: "#BDBDBD", backgroundColor: "#F6F6F6" };
 
 const LoginScreen = () => {
-  const [number, setNumber] = React.useState("");
+  const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [numberInputStyles, setNumberInputStyles] = React.useState({ ...onBlurStyle });
+  const [emailInputStyles, setEmailInputStyles] = React.useState({ ...onBlurStyle });
   const [passwordInputStyles, setPasswordInputStyles] = React.useState({ ...onBlurStyle });
+
+  const onLogin = () => {
+    console.log('email: ' + email);
+    console.log('password: ' + password);
+  }
 
   return (
     <KeyboardAvoidingView
@@ -40,16 +45,16 @@ const LoginScreen = () => {
             <View style={styles.box}>
               <Text style={styles.title}>Увійти</Text>
               <TextInput
-                style={[styles.input, numberInputStyles]}
-                onChangeText={setNumber}
-                value={number}
+                style={[styles.input, emailInputStyles]}
+                onChangeText={setEmail}
+                value={email}
                 placeholder="Адреса електронної пошти"
                 keyboardType="email-address"
                 onFocus={() => {
-                  setNumberInputStyles({ ...onFocusStyle });
+                  setEmailInputStyles({ ...onFocusStyle });
                 }}
                 onBlur={() => {
-                  setNumberInputStyles({ ...onBlurStyle });
+                  setEmailInputStyles({ ...onBlurStyle });
                 }}
               />
               <View style={styles.inputWrapper}>
@@ -69,7 +74,7 @@ const LoginScreen = () => {
                   <Text style={styles.showText}>Показати</Text>
                 </Pressable>
               </View>
-              <Pressable style={styles.button}>
+              <Pressable style={styles.button} onPress={onLogin}>
                 <Text style={styles.buttonText}>Увійти</Text>
               </Pressable>
               <Pressable>

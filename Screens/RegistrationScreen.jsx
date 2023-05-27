@@ -21,11 +21,17 @@ const onBlurStyle = { borderColor: "#E8E8E8", color: "#BDBDBD", backgroundColor:
 
 const RegistrationScreen = () => {
   const [login, setLogin] = React.useState("");
-  const [number, setNumber] = React.useState("");
+  const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [loginInputStyles, setLoginInputStyles] = React.useState({ ...onBlurStyle });
-  const [numberInputStyles, setNumberInputStyles] = React.useState({ ...onBlurStyle });
+  const [emailInputStyles, setEmailInputStyles] = React.useState({ ...onBlurStyle });
   const [passwordInputStyles, setPasswordInputStyles] = React.useState({ ...onBlurStyle });
+
+  const onRegister = () => {
+    console.log("login: " + login);
+    console.log("email: " + email);
+    console.log("password: " + password);
+  };
 
   return (
     <KeyboardAvoidingView
@@ -74,16 +80,16 @@ const RegistrationScreen = () => {
                 }}
               />
               <TextInput
-                style={[styles.input, numberInputStyles]}
-                onChangeText={setNumber}
-                value={number}
+                style={[styles.input, emailInputStyles]}
+                onChangeText={setEmail}
+                value={email}
                 placeholder="Адреса електронної пошти"
                 keyboardType="email-address"
                 onFocus={() => {
-                  setNumberInputStyles({ ...onFocusStyle });
+                  setEmailInputStyles({ ...onFocusStyle });
                 }}
                 onBlur={() => {
-                  setNumberInputStyles({ ...onBlurStyle });
+                  setEmailInputStyles({ ...onBlurStyle });
                 }}
               />
               <View style={styles.inputWrapper}>
@@ -104,7 +110,9 @@ const RegistrationScreen = () => {
                 </Pressable>
               </View>
               <Pressable style={styles.button}>
-                <Text style={styles.buttonText}>Зареєструватися</Text>
+                <Text style={styles.buttonText} onPress={onRegister}>
+                  Зареєструватися
+                </Text>
               </Pressable>
               <Pressable>
                 <Text style={styles.loginText}>Вже є акаунт? Увійти</Text>
