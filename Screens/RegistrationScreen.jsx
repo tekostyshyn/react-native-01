@@ -10,6 +10,10 @@ import {
   Text,
   TextInput,
   Pressable,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform,
 } from "react-native";
 
 const onFocusStyle = { borderColor: "#FF6C00", color: "#212121", backgroundColor: "#FFFFFF" };
@@ -24,85 +28,92 @@ const RegistrationScreen = () => {
   const [passwordInputStyles, setPasswordInputStyles] = React.useState({ ...onBlurStyle });
 
   return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={BackgroundImage}
-        style={{
-          height: "100%",
-          width: "100%",
-        }}
-      >
-        <View style={styles.box}>
-          <Animated.View style={styles.imageWrapper}>
-            <Pressable style={styles.addButton}>
-              <Svg
-                width={13}
-                height={13}
-                viewBox="0 0 13 13"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <Path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M7 0H6v6H0v1h6v6h1V7h6V6H7V0z"
-                  fill="#FF6C00"
+    <KeyboardAvoidingView
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <ImageBackground
+            source={BackgroundImage}
+            style={{
+              height: "100%",
+              width: "100%",
+            }}
+          >
+            <View style={styles.box}>
+              <Animated.View style={styles.imageWrapper}>
+                <Pressable style={styles.addButton}>
+                  <Svg
+                    width={13}
+                    height={13}
+                    viewBox="0 0 13 13"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <Path
+                      fillRule="evenodd"
+                      clipRule="evenodd"
+                      d="M7 0H6v6H0v1h6v6h1V7h6V6H7V0z"
+                      fill="#FF6C00"
+                    />
+                  </Svg>
+                </Pressable>
+              </Animated.View>
+              <Text style={styles.title}>Реєстрація</Text>
+              <TextInput
+                style={[styles.input, loginInputStyles]}
+                onChangeText={setLogin}
+                value={login}
+                placeholder="Логін"
+                onFocus={() => {
+                  setLoginInputStyles({ ...onFocusStyle });
+                }}
+                onBlur={() => {
+                  setLoginInputStyles({ ...onBlurStyle });
+                }}
+              />
+              <TextInput
+                style={[styles.input, numberInputStyles]}
+                onChangeText={setNumber}
+                value={number}
+                placeholder="Адреса електронної пошти"
+                keyboardType="email-address"
+                onFocus={() => {
+                  setNumberInputStyles({ ...onFocusStyle });
+                }}
+                onBlur={() => {
+                  setNumberInputStyles({ ...onBlurStyle });
+                }}
+              />
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={[styles.input, passwordInputStyles]}
+                  onChangeText={setPassword}
+                  value={password}
+                  placeholder="Пароль"
+                  onFocus={() => {
+                    setPasswordInputStyles({ ...onFocusStyle });
+                  }}
+                  onBlur={() => {
+                    setPasswordInputStyles({ ...onBlurStyle });
+                  }}
                 />
-              </Svg>
-            </Pressable>
-          </Animated.View>
-          <Text style={styles.title}>Реєстрація</Text>
-          <TextInput
-            style={[styles.input, loginInputStyles]}
-            onChangeText={setLogin}
-            value={login}
-            placeholder="Логін"
-            onFocus={() => {
-              setLoginInputStyles({ ...onFocusStyle });
-            }}
-            onBlur={() => {
-              setLoginInputStyles({ ...onBlurStyle });
-            }}
-          />
-          <TextInput
-            style={[styles.input, numberInputStyles]}
-            onChangeText={setNumber}
-            value={number}
-            placeholder="Адреса електронної пошти"
-            keyboardType="email-address"
-            onFocus={() => {
-              setNumberInputStyles({ ...onFocusStyle });
-            }}
-            onBlur={() => {
-              setNumberInputStyles({ ...onBlurStyle });
-            }}
-          />
-          <View style={styles.inputWrapper}>
-            <TextInput
-              style={[styles.input, passwordInputStyles]}
-              onChangeText={setPassword}
-              value={password}
-              placeholder="Пароль"
-              onFocus={() => {
-                setPasswordInputStyles({ ...onFocusStyle });
-              }}
-              onBlur={() => {
-                setPasswordInputStyles({ ...onBlurStyle });
-              }}
-            />
-            <Pressable style={styles.showTextButton}>
-              <Text style={styles.showText}>Показати</Text>
-            </Pressable>
-          </View>
-          <Pressable style={styles.button}>
-            <Text style={styles.buttonText}>Зареєструватися</Text>
-          </Pressable>
-          <Pressable>
-            <Text style={styles.loginText}>Вже є акаунт? Увійти</Text>
-          </Pressable>
+                <Pressable style={styles.showTextButton}>
+                  <Text style={styles.showText}>Показати</Text>
+                </Pressable>
+              </View>
+              <Pressable style={styles.button}>
+                <Text style={styles.buttonText}>Зареєструватися</Text>
+              </Pressable>
+              <Pressable>
+                <Text style={styles.loginText}>Вже є акаунт? Увійти</Text>
+              </Pressable>
+            </View>
+          </ImageBackground>
         </View>
-      </ImageBackground>
-    </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
