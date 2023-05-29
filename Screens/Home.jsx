@@ -1,7 +1,9 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { Pressable, View, StyleSheet } from "react-native";
+import { HeaderBackButton } from "@react-navigation/elements";
 import Svg, { Path } from "react-native-svg";
 import CreatePostsScreen from "./CreatePostsScreen";
 import PostsScreen from "./PostsScreen";
@@ -9,6 +11,8 @@ import ProfileScreen from "./ProfileScreen";
 
 const Home = () => {
   const Tabs = createBottomTabNavigator();
+  const navigation = useNavigation();
+
   return (
     <Tabs.Navigator
       screenOptions={({ route }) => ({
@@ -39,6 +43,28 @@ const Home = () => {
           }
         },
         tabBarShowLabel: false,
+        tabBarStyle: {
+          height: 83,
+          shadowColor: "#0000004D",
+          shadowOffset: {
+            width: 0,
+            height: -0.5,
+          },
+        },
+        headerTitleAlign: "center",
+        headerTitleStyle: {
+          fontWeight: 500,
+          fontSize: 17,
+          lineHeight: 22,
+          color: "#212121",
+        },
+        headerStyle: {
+          shadowColor: "#0000004D",
+          shadowOffset: {
+            width: 0,
+            height: 0.5,
+          },
+        },
       })}
     >
       <Tabs.Screen
@@ -51,42 +77,22 @@ const Home = () => {
               <Feather name="log-out" size={24} color="#BDBDBD" />
             </Pressable>
           ),
-          headerStyle: {
-            shadowColor: "#0000004D",
-            shadowOffset: {
-              width: 0,
-              height: 0.5,
-            },
-          },
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            fontWeight: 500,
-            fontSize: 17,
-            lineHeight: 22,
-            color: "#212121",
-          },
-          tabBarStyle: {
-            height: 83,
-            shadowColor: "#0000004D",
-            shadowOffset: {
-              width: 0,
-              height: -0.5,
-            },
-          },
         }}
       />
       <Tabs.Screen
         name="CreatePosts"
         component={CreatePostsScreen}
         options={{
+          headerLeft: () => (
+            <HeaderBackButton
+              onPress={() => {
+                navigation.navigate("Home", {
+                  screen: "Posts",
+                });
+              }}
+            />
+          ),
           title: "Створити публікацію",
-          headerTitleAlign: "center",
-          headerTitleStyle: {
-            fontWeight: 500,
-            fontSize: 17,
-            lineHeight: 22,
-            color: "#212121",
-          },
           tabBarStyle: { display: "none" },
         }}
       />
