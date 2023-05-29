@@ -90,11 +90,7 @@ const Home = () => {
           tabBarStyle: { display: "none" },
         }}
       />
-      <Tabs.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{ headerShown: false, tabBarStyle: { display: "none" } }}
-      />
+      <Tabs.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
     </Tabs.Navigator>
   );
 };
