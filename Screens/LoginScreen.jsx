@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
+
 import BackgroundImage from "../assets/background-image.jpeg";
 
 import {
@@ -22,11 +24,12 @@ const LoginScreen = () => {
   const [password, setPassword] = React.useState("");
   const [emailInputStyles, setEmailInputStyles] = React.useState({ ...onBlurStyle });
   const [passwordInputStyles, setPasswordInputStyles] = React.useState({ ...onBlurStyle });
+  const navigation = useNavigation();
 
   const onLogin = () => {
-    console.log('email: ' + email);
-    console.log('password: ' + password);
-  }
+    console.log("email: " + email);
+    console.log("password: " + password);
+  };
 
   return (
     <KeyboardAvoidingView
@@ -74,10 +77,16 @@ const LoginScreen = () => {
                   <Text style={styles.showText}>Показати</Text>
                 </Pressable>
               </View>
-              <Pressable style={styles.button} onPress={onLogin}>
+              <Pressable
+                style={styles.button}
+                onPress={() => {
+                  onLogin();
+                  navigation.navigate("Home");
+                }}
+              >
                 <Text style={styles.buttonText}>Увійти</Text>
               </Pressable>
-              <Pressable>
+              <Pressable onPress={() => navigation.navigate("Registration")}>
                 <Text style={styles.loginText}>Немає акаунту? Зареєструватися</Text>
               </Pressable>
             </View>

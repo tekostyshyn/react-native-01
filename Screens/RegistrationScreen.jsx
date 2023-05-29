@@ -1,4 +1,6 @@
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
+
 import Svg, { Path } from "react-native-svg";
 import BackgroundImage from "../assets/background-image.jpeg";
 
@@ -16,8 +18,16 @@ import {
   Platform,
 } from "react-native";
 
-const onFocusStyle = { borderColor: "#FF6C00", color: "#212121", backgroundColor: "#FFFFFF" };
-const onBlurStyle = { borderColor: "#E8E8E8", color: "#BDBDBD", backgroundColor: "#F6F6F6" };
+const onFocusStyle = {
+  borderColor: "#FF6C00",
+  color: "#212121",
+  backgroundColor: "#FFFFFF",
+};
+const onBlurStyle = {
+  borderColor: "#E8E8E8",
+  color: "#BDBDBD",
+  backgroundColor: "#F6F6F6",
+};
 
 const RegistrationScreen = () => {
   const [login, setLogin] = React.useState("");
@@ -26,6 +36,7 @@ const RegistrationScreen = () => {
   const [loginInputStyles, setLoginInputStyles] = React.useState({ ...onBlurStyle });
   const [emailInputStyles, setEmailInputStyles] = React.useState({ ...onBlurStyle });
   const [passwordInputStyles, setPasswordInputStyles] = React.useState({ ...onBlurStyle });
+  const navigation = useNavigation();
 
   const onRegister = () => {
     console.log("login: " + login);
@@ -110,11 +121,17 @@ const RegistrationScreen = () => {
                 </Pressable>
               </View>
               <Pressable style={styles.button}>
-                <Text style={styles.buttonText} onPress={onRegister}>
+                <Text
+                  style={styles.buttonText}
+                  onPress={() => {
+                    onRegister();
+                    navigation.navigate("Home");
+                  }}
+                >
                   Зареєструватися
                 </Text>
               </Pressable>
-              <Pressable>
+              <Pressable onPress={() => navigation.navigate("Login")}>
                 <Text style={styles.loginText}>Вже є акаунт? Увійти</Text>
               </Pressable>
             </View>
