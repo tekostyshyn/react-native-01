@@ -61,12 +61,16 @@ const CreatePostsScreen = () => {
     }
   }, [name, location]);
 
-  const onSubmit = () => {
-    console.log("name: " + name);
-    console.log("location: " + location);
+  const resetState = () => {
     setPhotoUri(null);
     setName("");
     setLocation("");
+  };
+
+  const onSubmit = () => {
+    console.log("name: " + name);
+    console.log("location: " + location);
+    resetState();
   };
 
   if (hasPermission === false || hasPermission === null) {
@@ -199,6 +203,15 @@ const CreatePostsScreen = () => {
               Опублікувати
             </Text>
           </Pressable>
+          <Pressable
+            style={styles.deleteWrapper}
+            onPress={() => {
+              resetState();
+              navigation.navigate("Posts");
+            }}
+          >
+            <Feather style={styles.deleteIcon} name="trash-2" size={24} />
+          </Pressable>
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -213,7 +226,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#FFFFFF",
     paddingTop: 32,
-    paddingBottom: 34,
+    paddingBottom: 22,
     paddingLeft: 16,
     paddingRight: 16,
   },
@@ -316,6 +329,19 @@ const styles = StyleSheet.create({
     marginTop: 16,
     backgroundColor: "#F6F6F6",
     borderRadius: 100,
+  },
+  deleteWrapper: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 70,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#F6F6F6",
+    marginTop: "auto",
+  },
+  deleteIcon: {
+    color: "#BDBDBD",
   },
 });
 
