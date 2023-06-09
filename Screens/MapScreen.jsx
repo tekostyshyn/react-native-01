@@ -1,12 +1,11 @@
 import React from "react";
-import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, { Marker } from "react-native-maps";
 import { StyleSheet, View } from "react-native";
 
 const MapScreen = () => {
   return (
     <View style={styles.container}>
       <MapView
-        provider={PROVIDER_GOOGLE}
         style={styles.map}
         region={{
           latitude: 48.91527,
