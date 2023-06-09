@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-
 import {
   Text,
   TextInput,
@@ -15,6 +14,7 @@ import {
   Platform,
 } from "react-native";
 import Svg, { G, Path, Defs, ClipPath } from "react-native-svg";
+import { Feather } from "@expo/vector-icons";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
@@ -26,6 +26,7 @@ const CreatePostsScreen = () => {
   const [photoUri, setPhotoUri] = useState(null);
   const [name, setName] = useState("");
   const [location, setLocation] = useState(null);
+  const [isButtonActive, setButtonActive] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -52,9 +53,20 @@ const CreatePostsScreen = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    if (name && location) {
+      setButtonActive(true);
+    } else {
+      setButtonActive(false);
+    }
+  }, [name, location]);
+
   const onSubmit = () => {
     console.log("name: " + name);
     console.log("location: " + location);
+    setPhotoUri(null);
+    setName("");
+    setLocation("");
   };
 
   if (hasPermission === false || hasPermission === null) {
@@ -163,19 +175,26 @@ const CreatePostsScreen = () => {
             onChangeText={setName}
             placeholder="Назва..."
           ></TextInput>
-          <TextInput
-            style={styles.input}
-            value={location}
-            onChangeText={setLocation}
-            placeholder="Місцевість..."
-          ></TextInput>
-          <Pressable style={styles.button}>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.input}
+              paddingLeft={28}
+              value={location}
+              onChangeText={setLocation}
+              placeholder="Місцевість..."
+            ></TextInput>
+            <Feather style={styles.inputIcon} name="map-pin" size={24} />
+          </View>
+          <Pressable
+            style={isButtonActive ? styles.activeButton : styles.disabledButton}
+            disabled={isButtonActive ? true : false}
+          >
             <Text
-              style={styles.buttonText}
-                onPress={() => {
-                  onSubmit();
-                  navigation.navigate("Posts");
-                }}
+              style={isButtonActive ? styles.buttonTextActive : styles.buttonTextDisabled}
+              onPress={() => {
+                onSubmit();
+                navigation.navigate("Posts");
+              }}
             >
               Опублікувати
             </Text>
@@ -233,7 +252,46 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  button: {
+  text: {
+    alignSelf: "flex-start",
+    marginBottom: 48,
+    color: "#BDBDBD",
+    // font-family: Roboto;
+    fontSize: 16,
+  },
+  buttonTextActive: {
+    // font-family: Roboto;
+    fontSize: 16,
+    color: "#ffffff",
+  },
+  buttonTextDisabled: {
+    // font-family: Roboto;
+    fontSize: 16,
+    color: "#BDBDBD",
+  },
+  inputWrapper: {
+    position: "relative",
+    width: "100%",
+    height: 50,
+    marginBottom: 16,
+  },
+  input: {
+    width: "100%",
+    height: 50,
+    marginBottom: 16,
+    borderBottomColor: "#E8E8E8",
+    borderBottomWidth: 1,
+    color: "#212121",
+    fontSize: 16,
+    // font-family: Roboto;
+  },
+  inputIcon: {
+    color: "#BDBDBD",
+    position: "absolute",
+    left: 0,
+    bottom: 13,
+  },
+  activeButton: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -246,27 +304,18 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF6C00",
     borderRadius: 100,
   },
-  text: {
-    alignSelf: "flex-start",
-    marginBottom: 48,
-    color: "#BDBDBD",
-    // font-family: Roboto;
-    fontSize: 16,
-  },
-  buttonText: {
-    // font-family: Roboto;
-    fontSize: 16,
-    color: "#FFFFFF",
-  },
-  input: {
-    width: "100%",
-    height: 50,
+  disabledButton: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 343,
+    height: 51,
+    marginLeft: "auto",
+    marginRight: "auto",
     marginBottom: 16,
-    borderBottomColor: "#E8E8E8",
-    borderBottomWidth: 1,
-    color: "#212121",
-    fontSize: 16,
-    // font-family: Roboto;
+    marginTop: 16,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 100,
   },
 });
 
