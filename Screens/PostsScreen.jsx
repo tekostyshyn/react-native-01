@@ -1,11 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { View, StyleSheet, Image, Text, Pressable } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { getPosts, createPostsCollection } from "../redux/posts/operations";
+import {
+  selectUserId,
+  selectLoginState,
+  selectRegisteredState,
+  selectUserLogin,
+} from "../redux/auth/selectors";
 
 const PostsScreen = () => {
   const navigation = useNavigation();
-  
+  const dispatch = useDispatch();
+  const userId = useSelector(selectUserId);
+  const isLoggedIn = useSelector(selectLoginState);
+  const isRegistered = useSelector(selectRegisteredState);
+  const userLogin = useSelector(selectUserLogin);
+
+  useEffect(() => {
+    if (!userId) return;
+    if (isRegistered) {
+      dispatch(createPostsCollection({ userId, userLogin }));
+    }
+    if (isLoggedIn) {
+      dispatch(getPosts(userId));
+    }
+  }, [userId]);
+
   return (
     <View style={styles.container}>
       <View style={styles.profileWrapper}>

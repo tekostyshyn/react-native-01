@@ -1,6 +1,7 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-
+import { register } from "../redux/auth/operations";
 import Svg, { Path } from "react-native-svg";
 import BackgroundImage from "../assets/background-image.jpeg";
 
@@ -37,11 +38,16 @@ const RegistrationScreen = () => {
   const [emailInputStyles, setEmailInputStyles] = React.useState({ ...onBlurStyle });
   const [passwordInputStyles, setPasswordInputStyles] = React.useState({ ...onBlurStyle });
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const onRegister = () => {
-    console.log("login: " + login);
-    console.log("email: " + email);
-    console.log("password: " + password);
+    dispatch(
+      register({
+        email,
+        password,
+        login,
+      })
+    );
   };
 
   return (

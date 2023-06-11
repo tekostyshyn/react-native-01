@@ -1,5 +1,7 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
+import { login } from "../redux/auth/operations";
 
 import BackgroundImage from "../assets/background-image.jpeg";
 
@@ -25,10 +27,15 @@ const LoginScreen = () => {
   const [emailInputStyles, setEmailInputStyles] = React.useState({ ...onBlurStyle });
   const [passwordInputStyles, setPasswordInputStyles] = React.useState({ ...onBlurStyle });
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const onLogin = () => {
-    console.log("email: " + email);
-    console.log("password: " + password);
+    dispatch(
+      login({
+        email,
+        password,
+      })
+    );
   };
 
   return (
