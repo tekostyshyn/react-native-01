@@ -1,10 +1,9 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { login } from "../redux/auth/operations";
-
+import { selectLoginState } from "../redux/auth/selectors";
 import BackgroundImage from "../assets/background-image.jpeg";
-
 import {
   ImageBackground,
   StyleSheet,
@@ -22,21 +21,31 @@ const onFocusStyle = { borderColor: "#FF6C00", color: "#212121", backgroundColor
 const onBlurStyle = { borderColor: "#E8E8E8", color: "#BDBDBD", backgroundColor: "#F6F6F6" };
 
 const LoginScreen = () => {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [emailInputStyles, setEmailInputStyles] = React.useState({ ...onBlurStyle });
-  const [passwordInputStyles, setPasswordInputStyles] = React.useState({ ...onBlurStyle });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailInputStyles, setEmailInputStyles] = useState({ ...onBlurStyle });
+  const [passwordInputStyles, setPasswordInputStyles] = useState({ ...onBlurStyle });
+  const [isButtonActive, setButtonActive] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const isLoggedIn = useSelector(selectLoginState);
 
   const onLogin = () => {
     dispatch(
       login({
-        email,
-        password,
+        inputEmail: email,
+        inputPassword: password,
       })
     );
   };
+
+  useEffect(() => {
+    if (email && password) {
+      setButtonActive(true);
+      return;
+    }
+    setButtonActive(false);
+  }, [email, password]);
 
   return (
     <KeyboardAvoidingView
@@ -85,13 +94,14 @@ const LoginScreen = () => {
                 </Pressable>
               </View>
               <Pressable
-                style={styles.button}
+                style={isButtonActive ? styles.activeButton : styles.disabledButton}
+                disabled={isButtonActive ? false : true}
                 onPress={() => {
                   onLogin();
-                  navigation.navigate("Home");
+                  isLoggedIn && navigation.navigate("Home");
                 }}
               >
-                <Text style={styles.buttonText}>Увійти</Text>
+                <Text style={isButtonActive ? styles.buttonTextActive : styles.buttonTextDisabled}>Увійти</Text>
               </Pressable>
               <Pressable onPress={() => navigation.navigate("Registration")}>
                 <Text style={styles.loginText}>Немає акаунту? Зареєструватися</Text>
@@ -140,7 +150,7 @@ const styles = StyleSheet.create({
     padding: 16,
     fontSize: 16,
   },
-  button: {
+  activeButton: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -152,10 +162,27 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF6C00",
     borderRadius: 100,
   },
-  buttonText: {
+  disabledButton: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 343,
+    height: 51,
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginBottom: 16,
+    backgroundColor: "#F6F6F6",
+    borderRadius: 100,
+  },
+  buttonTextActive: {
     // font-family: Roboto;
     fontSize: 16,
     color: "#FFFFFF",
+  },
+  buttonTextDisabled: {
+    // font-family: Roboto;
+    fontSize: 16,
+    color: "#BDBDBD",
   },
   loginText: {
     // font-family: Roboto;

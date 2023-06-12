@@ -6,8 +6,8 @@ export const getPosts = createAsyncThunk("posts/fetchAll", async (userId, thunkA
   try {
     const docRef = doc(db, "posts", userId);
     const docSnap = await getDoc(docRef);
-    console.log(docSnap.data());
-    return docSnap.data();
+    const allPosts = docSnap.data().posts;
+    return allPosts;
   } catch (error) {
     console.log(error);
     return thunkAPI.rejectWithValue(error.message);
@@ -19,8 +19,8 @@ export const createPostsCollection = createAsyncThunk(
   async ({ userId, userLogin }, thunkAPI) => {
     try {
       const newDoc = await setDoc(doc(db, "posts", userId), {
-        name: "Some name",
         login: userLogin,
+        posts: {},
       });
       return newDoc;
     } catch (error) {

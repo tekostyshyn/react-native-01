@@ -2,40 +2,33 @@ import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { View, StyleSheet, Image, Text, Pressable } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { useDispatch, useSelector } from "react-redux";
-import { getPosts, createPostsCollection } from "../redux/posts/operations";
+import { useSelector } from "react-redux";
 import {
   selectUserId,
-  selectLoginState,
-  selectRegisteredState,
   selectUserLogin,
+  selectUserEmail,
 } from "../redux/auth/selectors";
 
 const PostsScreen = () => {
   const navigation = useNavigation();
-  const dispatch = useDispatch();
-  const userId = useSelector(selectUserId);
-  const isLoggedIn = useSelector(selectLoginState);
-  const isRegistered = useSelector(selectRegisteredState);
-  const userLogin = useSelector(selectUserLogin);
+  // const dispatch = useDispatch();
+  // const userId = useSelector(selectUserId);
+  const email = useSelector(selectUserEmail);
+  const login = useSelector(selectUserLogin);
 
-  useEffect(() => {
-    if (!userId) return;
-    if (isRegistered) {
-      dispatch(createPostsCollection({ userId, userLogin }));
-    }
-    if (isLoggedIn) {
-      dispatch(getPosts(userId));
-    }
-  }, [userId]);
+  // const isLoggedIn = useSelector(selectLoginState);
+
+  // useEffect(() => {
+  //   if (!userId) return;
+  // }, [userId]);
 
   return (
     <View style={styles.container}>
       <View style={styles.profileWrapper}>
         <Image style={styles.profilePhoto}></Image>
         <View style={styles.profileTextWrapper}>
-          <Text style={styles.profileName}>Natali Romanova</Text>
-          <Text style={styles.profileEmail}>email@example.com</Text>
+          <Text style={styles.profileName}>{login}</Text>
+          <Text style={styles.profileEmail}>{email}</Text>
         </View>
       </View>
       <View style={styles.post}>

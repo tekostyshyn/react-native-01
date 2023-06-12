@@ -1,9 +1,11 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { Pressable, View, StyleSheet } from "react-native";
 import { HeaderBackButton } from "@react-navigation/elements";
+import { logout } from "../redux/auth/operations";
 import Svg, { Path } from "react-native-svg";
 import CreatePostsScreen from "./CreatePostsScreen";
 import PostsScreen from "./PostsScreen";
@@ -12,6 +14,12 @@ import ProfileScreen from "./ProfileScreen";
 const Home = () => {
   const Tabs = createBottomTabNavigator();
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigation.navigate("Login");
+  };
 
   return (
     <Tabs.Navigator
@@ -73,7 +81,7 @@ const Home = () => {
         options={{
           title: "Публікації",
           headerRight: () => (
-            <Pressable style={{ width: 24, height: 24, marginRight: 10 }}>
+            <Pressable style={{ width: 24, height: 24, marginRight: 10 }} onPress={handleLogout}>
               <Feather name="log-out" size={24} color="#BDBDBD" />
             </Pressable>
           ),

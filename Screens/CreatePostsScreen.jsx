@@ -192,8 +192,8 @@ const CreatePostsScreen = () => {
           </View>
           <Pressable
             style={isButtonActive ? styles.activeButton : styles.disabledButton}
-            disabled={isButtonActive ? true : false}
-          >
+            disabled={isButtonActive ? false : true}
+            >
             <Text
               style={isButtonActive ? styles.buttonTextActive : styles.buttonTextDisabled}
               onPress={() => {

@@ -2,18 +2,23 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
   updateProfile,
+  signOut,
 } from "firebase/auth";
-import { auth } from "../../config";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../../config";
 
 export const register = createAsyncThunk(
   "auth/signup",
-  async ({ email, password, login }, thunkAPI) => {
+  async ({ inputEmail, inputPassword, inputLogin }, thunkAPI) => {
     try {
-      const res = await createUserWithEmailAndPassword(auth, email, password);
-      const newUser = { email: res.user.email, login, userId: res.user.uid };
-      return newUser;
+      await createUserWithEmailAndPassword(auth, inputEmail, inputPassword);
+      await updateProfile(auth.currentUser, { displayName: inputLogin });
+      const { email, displayName, uid } = auth.currentUser;
+      await setDoc(doc(db, "posts", uid), {
+        posts: {},
+      });
+      return { email, login: displayName, userId: uid };
     } catch (error) {
       console.log(error);
       return thunkAPI.rejectWithValue(error.message);
@@ -21,11 +26,24 @@ export const register = createAsyncThunk(
   }
 );
 
-export const login = createAsyncThunk("auth/login", async ({ email, password }, thunkAPI) => {
+export const login = createAsyncThunk(
+  "auth/login",
+  async ({ inputEmail, inputPassword }, thunkAPI) => {
+    try {
+      await signInWithEmailAndPassword(auth, inputEmail, inputPassword);
+      const { email, displayName, uid } = auth.currentUser;
+      return { email, login: displayName, userId: uid };
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
   try {
-    const res = await signInWithEmailAndPassword(auth, email, password);
-    const user = { email: res.user.email, userId: res.user.uid };
-    return user;
+    const res = await signOut(auth);
+    return res;
   } catch (error) {
     console.log(error);
     return thunkAPI.rejectWithValue(error.message);
