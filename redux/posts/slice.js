@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getPosts } from "./operations";
+import { getPosts, createPost } from "./operations";
 
 const initialState = {
-  posts: [],
+  postsArray: [],
 };
 
 const postsSlice = createSlice({
@@ -10,7 +10,9 @@ const postsSlice = createSlice({
   initialState,
   extraReducers: (buider) => {
     buider.addCase(getPosts.fulfilled, (state, action) => {
-      state.posts = action.payload;
+      state.postsArray = [...action.payload];
+    }).addCase(createPost.fulfilled, (state, action) => {
+      state.postsArray.push(action.payload);
     });
   },
 });

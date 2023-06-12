@@ -1,26 +1,41 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import { View, StyleSheet, Image, Text, Pressable } from "react-native";
+import { View, StyleSheet, Image, Text, Pressable, FlatList } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { useSelector } from "react-redux";
-import {
-  selectUserId,
-  selectUserLogin,
-  selectUserEmail,
-} from "../redux/auth/selectors";
+import { selectUserId, selectUserLogin, selectUserEmail } from "../redux/auth/selectors";
+import { selectAllPosts } from "../redux/posts/selectors";
+import { getPosts } from "../redux/posts/operations";
+
+const Item = ({ title, commentsAmount, location, imageUrl, onPressComments, onPressMap }) => (
+  <View style={styles.post}>
+    <Image style={styles.postImage} source={{ uri: imageUrl }}></Image>
+    <Text style={styles.postText}>{title}</Text>
+    <View style={styles.addInfoWrapper}>
+      <Pressable style={styles.commentButton} onPress={() => onPressComments()}>
+        <Feather style={styles.addInfoIcon} name="message-circle" size={24} />
+        <Text style={styles.commentText}>{commentsAmount}</Text>
+      </Pressable>
+      <Pressable style={styles.locationButton} onPress={() => onPressMap()}>
+        <Feather style={styles.addInfoIcon} name="map-pin" size={24} />
+        <Text style={styles.locationText}>{location}</Text>
+      </Pressable>
+    </View>
+  </View>
+);
 
 const PostsScreen = () => {
   const navigation = useNavigation();
-  // const dispatch = useDispatch();
-  // const userId = useSelector(selectUserId);
+  const dispatch = useDispatch();
+  const userId = useSelector(selectUserId);
   const email = useSelector(selectUserEmail);
   const login = useSelector(selectUserLogin);
+  const fetchedPosts = useSelector(selectAllPosts);
 
-  // const isLoggedIn = useSelector(selectLoginState);
-
-  // useEffect(() => {
-  //   if (!userId) return;
-  // }, [userId]);
+  useEffect(() => {
+    if (!userId) return;
+    dispatch(getPosts(userId));
+  }, [userId]);
 
   return (
     <View style={styles.container}>
@@ -31,30 +46,26 @@ const PostsScreen = () => {
           <Text style={styles.profileEmail}>{email}</Text>
         </View>
       </View>
-      <View style={styles.post}>
-        <Image style={styles.postImage}></Image>
-        <Text style={styles.postText}>Ліс</Text>
-        <View style={styles.addInfoWrapper}>
-          <Pressable
-            style={styles.commentButton}
-            onPress={() => {
-              navigation.navigate("Comments");
-            }}
-          >
-            <Feather style={styles.addInfoIcon} name="message-circle" size={24} />
-            <Text style={styles.commentText}>0</Text>
-          </Pressable>
-          <Pressable
-            style={styles.locationButton}
-            onPress={() => {
-              navigation.navigate("Map");
-            }}
-          >
-            <Feather style={styles.addInfoIcon} name="map-pin" size={24} />
-            <Text style={styles.locationText}>Ivano-Frankivs'k Region, Ukraine</Text>
-          </Pressable>
-        </View>
-      </View>
+      {fetchedPosts.length > 0 && (
+        <FlatList
+          data={fetchedPosts}
+          renderItem={({ item }) => (
+            <Item
+              title={item.name}
+              commentsAmount={item.comments.length}
+              imageUrl={item.imageUrl}
+              location={item.location.name}
+              onPressComments={() => {
+                navigation.navigate('Comments')
+              }}
+              onPressMap={() => {
+                navigation.navigate('Map')
+              }}
+            />
+          )}
+          keyExtractor={(item) => item.id}
+        />
+      )}
     </View>
   );
 };
@@ -88,7 +99,6 @@ const styles = StyleSheet.create({
     height: 60,
     width: 60,
     borderRadius: 16,
-    backgroundColor: "#F6F6F6",
   },
   profileTextWrapper: {},
   profileName: {
@@ -104,7 +114,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 240,
     borderRadius: 8,
-    backgroundColor: "#F6F6F6",
     marginBottom: 8,
   },
   postText: {
@@ -118,7 +127,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
   },
   addInfoIcon: {
     color: "#BDBDBD",
@@ -141,6 +149,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
+    marginLeft: "auto",
   },
   locationText: {
     // font-family: Roboto;

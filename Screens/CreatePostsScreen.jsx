@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { createPost } from "../redux/posts/operations";
+import { selectUserId } from "../redux/auth/selectors";
 import {
   Text,
   TextInput,
@@ -27,8 +30,11 @@ const CreatePostsScreen = () => {
   const [photoUri, setPhotoUri] = useState(null);
   const [name, setName] = useState("");
   const [location, setLocation] = useState(null);
+  const [geocode, setGeocode] = useState(null);
   const [isButtonActive, setButtonActive] = useState(false);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const userId = useSelector(selectUserId);
 
   useEffect(() => {
     (async () => {
@@ -39,20 +45,22 @@ const CreatePostsScreen = () => {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Permission to access location was denied");
-        return;
-      }
-
-      const loc = await Location.getCurrentPositionAsync({});
-      const grantedLocation = await Location.reverseGeocodeAsync(loc.coords);
-      const country = grantedLocation[0]["country"];
-      const city = grantedLocation[0]["city"];
-      setLocation(`${country}, ${city}`);
-    })();
-  }, []);
+    if (!location) {
+      (async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          console.log("Permission to access location was denied");
+          return;
+        }
+        const loc = await Location.getCurrentPositionAsync({});
+        setGeocode(loc);
+        const grantedLocation = await Location.reverseGeocodeAsync(loc.coords);
+        const country = grantedLocation[0]["country"];
+        const city = grantedLocation[0]["city"];
+        setLocation(`${country}, ${city}`);
+      })();
+    }
+  }, [location]);
 
   useEffect(() => {
     if (name && location) {
@@ -69,8 +77,18 @@ const CreatePostsScreen = () => {
   };
 
   const onSubmit = () => {
-    console.log("name: " + name);
-    console.log("location: " + location);
+    const newPost = {
+      id: Date.now(),
+      name,
+      location: {
+        geo: geocode,
+        name: location,
+      },
+      imageUrl: photoUri,
+      likes: 0,
+      comments: [],
+    };
+    dispatch(createPost({userId, newPost}))
     resetState();
   };
 
@@ -193,7 +211,7 @@ const CreatePostsScreen = () => {
           <Pressable
             style={isButtonActive ? styles.activeButton : styles.disabledButton}
             disabled={isButtonActive ? false : true}
-            >
+          >
             <Text
               style={isButtonActive ? styles.buttonTextActive : styles.buttonTextDisabled}
               onPress={() => {
