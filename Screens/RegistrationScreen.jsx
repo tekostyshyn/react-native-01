@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { register } from "../redux/auth/operations";
+import { selectAuthError } from "../redux/auth/selectors";
 import Svg, { Path } from "react-native-svg";
 import BackgroundImage from "../assets/background-image.jpeg";
 import * as ImagePicker from "expo-image-picker";
@@ -18,6 +19,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  Alert,
 } from "react-native";
 
 const onFocusStyle = {
@@ -41,10 +43,14 @@ const RegistrationScreen = () => {
   const [isButtonActive, setButtonActive] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const authError = useSelector(selectAuthError);
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
   const onRegister = () => {
+    if (!profilePhoto) {
+      Alert.alert("Please add profile photo");
+    }
     if (email && password && login && profilePhoto) {
       dispatch(
         register({
@@ -54,6 +60,8 @@ const RegistrationScreen = () => {
           profilePhoto,
         })
       );
+      Alert.alert(authError);
+      if (authError) return;
       navigation.navigate("Home");
     }
   };

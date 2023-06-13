@@ -30,7 +30,7 @@ export const register = createAsyncThunk(
       });
       return { email, login: displayName, userId: uid, photo: photoURL };
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       return thunkAPI.rejectWithValue(error.message);
     }
   }
@@ -45,7 +45,7 @@ export const login = createAsyncThunk(
       const profileImageUrl = await getDownloadURL(ref(storage, photoURL));
       return { email, login: displayName, userId: uid, photo: profileImageUrl };
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       return thunkAPI.rejectWithValue(error.message);
     }
   }
@@ -56,7 +56,7 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
     const res = await signOut(auth);
     return res;
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     return thunkAPI.rejectWithValue(error.message);
   }
 });

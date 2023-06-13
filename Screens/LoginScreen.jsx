@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { login } from "../redux/auth/operations";
+import { selectAuthError } from "../redux/auth/selectors";
 import BackgroundImage from "../assets/background-image.jpeg";
 import {
   ImageBackground,
@@ -14,6 +15,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  Alert,
 } from "react-native";
 
 const onFocusStyle = { borderColor: "#FF6C00", color: "#212121", backgroundColor: "#FFFFFF" };
@@ -26,6 +28,7 @@ const LoginScreen = () => {
   const [passwordInputStyles, setPasswordInputStyles] = useState({ ...onBlurStyle });
   const [isButtonActive, setButtonActive] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const authError = useSelector(selectAuthError);
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
@@ -37,6 +40,8 @@ const LoginScreen = () => {
           inputPassword: password,
         })
       );
+      Alert.alert(authError);
+      if (authError) return;
       navigation.navigate("Home");
     }
   };
@@ -92,7 +97,10 @@ const LoginScreen = () => {
                     setPasswordInputStyles({ ...onBlurStyle });
                   }}
                 />
-                <Pressable style={styles.showTextButton} onPress={() => setShowPassword(!showPassword)}>
+                <Pressable
+                  style={styles.showTextButton}
+                  onPress={() => setShowPassword(!showPassword)}
+                >
                   <Text style={styles.showText}>{showPassword ? "Сховати" : "Показати"}</Text>
                 </Pressable>
               </View>
