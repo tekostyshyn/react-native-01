@@ -40,6 +40,7 @@ const RegistrationScreen = () => {
   const [passwordInputStyles, setPasswordInputStyles] = useState({ ...onBlurStyle });
   const [isButtonActive, setButtonActive] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
@@ -144,6 +145,7 @@ const RegistrationScreen = () => {
                   style={[styles.input, passwordInputStyles]}
                   onChangeText={setPassword}
                   value={password}
+                  secureTextEntry={showPassword ? false : true}
                   placeholder="Пароль"
                   onFocus={() => {
                     setPasswordInputStyles({ ...onFocusStyle });
@@ -152,8 +154,11 @@ const RegistrationScreen = () => {
                     setPasswordInputStyles({ ...onBlurStyle });
                   }}
                 />
-                <Pressable style={styles.showTextButton}>
-                  <Text style={styles.showText}>Показати</Text>
+                <Pressable
+                  style={styles.showTextButton}
+                  onPress={() => setShowPassword(!showPassword)}
+                >
+                  <Text style={styles.showText}>{showPassword ? "Сховати" : "Показати"}</Text>
                 </Pressable>
               </View>
               <Pressable

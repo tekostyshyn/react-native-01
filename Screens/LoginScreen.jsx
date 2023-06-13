@@ -25,6 +25,7 @@ const LoginScreen = () => {
   const [emailInputStyles, setEmailInputStyles] = useState({ ...onBlurStyle });
   const [passwordInputStyles, setPasswordInputStyles] = useState({ ...onBlurStyle });
   const [isButtonActive, setButtonActive] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
@@ -82,6 +83,7 @@ const LoginScreen = () => {
                   style={[styles.input, passwordInputStyles]}
                   onChangeText={setPassword}
                   value={password}
+                  secureTextEntry={showPassword ? false : true}
                   placeholder="Пароль"
                   onFocus={() => {
                     setPasswordInputStyles({ ...onFocusStyle });
@@ -90,8 +92,8 @@ const LoginScreen = () => {
                     setPasswordInputStyles({ ...onBlurStyle });
                   }}
                 />
-                <Pressable style={styles.showTextButton}>
-                  <Text style={styles.showText}>Показати</Text>
+                <Pressable style={styles.showTextButton} onPress={() => setShowPassword(!showPassword)}>
+                  <Text style={styles.showText}>{showPassword ? "Сховати" : "Показати"}</Text>
                 </Pressable>
               </View>
               <Pressable
