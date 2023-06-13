@@ -10,7 +10,9 @@ const postsSlice = createSlice({
   initialState,
   extraReducers: (buider) => {
     buider.addCase(getPosts.fulfilled, (state, action) => {
-      state.postsArray = [...action.payload];
+      if (action.payload) {
+        state.postsArray = [...action.payload];
+      }
     }).addCase(createPost.fulfilled, (state, action) => {
       state.postsArray.push(action.payload);
     });

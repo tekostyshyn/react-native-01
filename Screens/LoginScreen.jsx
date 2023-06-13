@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { login } from "../redux/auth/operations";
-import { selectLoginState } from "../redux/auth/selectors";
 import BackgroundImage from "../assets/background-image.jpeg";
 import {
   ImageBackground,
@@ -28,15 +27,17 @@ const LoginScreen = () => {
   const [isButtonActive, setButtonActive] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(selectLoginState);
 
   const onLogin = () => {
-    dispatch(
-      login({
-        inputEmail: email,
-        inputPassword: password,
-      })
-    );
+    if (email && password) {
+      dispatch(
+        login({
+          inputEmail: email,
+          inputPassword: password,
+        })
+      );
+      navigation.navigate("Home");
+    }
   };
 
   useEffect(() => {
@@ -96,12 +97,11 @@ const LoginScreen = () => {
               <Pressable
                 style={isButtonActive ? styles.activeButton : styles.disabledButton}
                 disabled={isButtonActive ? false : true}
-                onPress={() => {
-                  onLogin();
-                  isLoggedIn && navigation.navigate("Home");
-                }}
+                onPress={onLogin}
               >
-                <Text style={isButtonActive ? styles.buttonTextActive : styles.buttonTextDisabled}>Увійти</Text>
+                <Text style={isButtonActive ? styles.buttonTextActive : styles.buttonTextDisabled}>
+                  Увійти
+                </Text>
               </Pressable>
               <Pressable onPress={() => navigation.navigate("Registration")}>
                 <Text style={styles.loginText}>Немає акаунту? Зареєструватися</Text>

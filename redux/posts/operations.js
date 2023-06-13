@@ -8,11 +8,14 @@ export const getPosts = createAsyncThunk("posts/fetchAll", async (userId, thunkA
     const docRef = doc(db, "posts", userId);
     const docSnap = await getDoc(docRef);
     const allPosts = docSnap.data().posts;
-    for (post of allPosts) {
-      const url = await getDownloadURL(ref(storage, post.imageUrl));
-      post.imageUrl = url;
+    if (allPosts.length > 0) {
+      for (post of allPosts) {
+        const url = await getDownloadURL(ref(storage, post.imageUrl));
+        post.imageUrl = url;
+      }
+      return allPosts;
     }
-    return allPosts;
+    return null;
   } catch (error) {
     console.log(error);
     return thunkAPI.rejectWithValue(error.message);

@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { register } from "../redux/auth/operations";
-import { selectLoginState } from "../redux/auth/selectors";
 import Svg, { Path } from "react-native-svg";
 import BackgroundImage from "../assets/background-image.jpeg";
+import * as ImagePicker from "expo-image-picker";
 import {
   ImageBackground,
   StyleSheet,
   View,
+  Image,
   Animated,
   Text,
   TextInput,
@@ -38,18 +39,34 @@ const RegistrationScreen = () => {
   const [emailInputStyles, setEmailInputStyles] = useState({ ...onBlurStyle });
   const [passwordInputStyles, setPasswordInputStyles] = useState({ ...onBlurStyle });
   const [isButtonActive, setButtonActive] = useState(false);
+  const [profilePhoto, setProfilePhoto] = useState("");
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(selectLoginState);
 
   const onRegister = () => {
-    dispatch(
-      register({
-        inputEmail: email,
-        inputPassword: password,
-        inputLogin: login,
-      })
-    );
+    if (email && password && login && profilePhoto) {
+      dispatch(
+        register({
+          inputEmail: email,
+          inputPassword: password,
+          inputLogin: login,
+          profilePhoto,
+        })
+      );
+      navigation.navigate("Home");
+    }
+  };
+
+  const showImagePicker = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your photos!");
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync();
+    if (!result.canceled) {
+      setProfilePhoto(result.assets[0].uri);
+    }
   };
 
   useEffect(() => {
@@ -76,7 +93,10 @@ const RegistrationScreen = () => {
           >
             <View style={styles.box}>
               <Animated.View style={styles.imageWrapper}>
-                <Pressable style={styles.addButton}>
+                {profilePhoto && (
+                  <Image source={{ uri: profilePhoto }} style={styles.profileImage}></Image>
+                )}
+                <Pressable style={styles.addButton} onPress={showImagePicker}>
                   <Svg
                     width={13}
                     height={13}
@@ -139,10 +159,7 @@ const RegistrationScreen = () => {
               <Pressable
                 style={isButtonActive ? styles.activeButton : styles.disabledButton}
                 disabled={isButtonActive ? false : true}
-                onPress={() => {
-                  onRegister();
-                  isLoggedIn && navigation.navigate("Home");
-                }}
+                onPress={onRegister}
               >
                 <Text style={isButtonActive ? styles.buttonTextActive : styles.buttonTextDisabled}>
                   Зареєструватися
@@ -183,6 +200,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     width: 120,
     height: 120,
+  },
+  profileImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 16,
   },
   addButton: {
     position: "absolute",
