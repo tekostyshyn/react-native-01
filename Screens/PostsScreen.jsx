@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { View, StyleSheet, Image, Text, Pressable, FlatList } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { selectUserId, selectUserLogin, selectUserEmail, selectUserPhoto } from "../redux/auth/selectors";
+import {
+  selectUserId,
+  selectUserLogin,
+  selectUserEmail,
+  selectUserPhoto,
+} from "../redux/auth/selectors";
 import { selectAllPosts } from "../redux/posts/selectors";
 import { getPosts } from "../redux/posts/operations";
 
@@ -41,7 +46,7 @@ const PostsScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.profileWrapper}>
-        <Image style={styles.profilePhoto} source={{uri: photo}}></Image>
+        <Image style={styles.profilePhoto} source={{ uri: photo }}></Image>
         <View style={styles.profileTextWrapper}>
           <Text style={styles.profileName}>{login}</Text>
           <Text style={styles.profileEmail}>{email}</Text>
@@ -57,10 +62,10 @@ const PostsScreen = () => {
               imageUrl={item.imageUrl}
               location={item.location.name}
               onPressComments={() => {
-                navigation.navigate('Comments')
+                navigation.navigate("Comments");
               }}
               onPressMap={() => {
-                navigation.navigate('Map')
+                navigation.navigate("Map", { location: item.location.geo.coords });
               }}
             />
           )}
