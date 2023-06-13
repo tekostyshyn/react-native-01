@@ -62,7 +62,7 @@ const PostsScreen = () => {
               imageUrl={item.imageUrl}
               location={item.location.name}
               onPressComments={() => {
-                navigation.navigate("Comments");
+                navigation.navigate("Comments", { postId: item.id });
               }}
               onPressMap={() => {
                 navigation.navigate("Map", { location: item.location.geo.coords });

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { selectUserPhoto, selectUserLogin } from "../redux/auth/selectors";
+import { logout } from "../redux/auth/operations";
 import { selectAllPosts } from "../redux/posts/selectors";
 import BackgroundImage from "../assets/background-image.jpeg";
 import {
@@ -51,6 +52,7 @@ const ProfileScreen = () => {
   const login = useSelector(selectUserLogin);
   const fetchedPosts = useSelector(selectAllPosts);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const handleLogout = () => {
     dispatch(logout());
@@ -87,7 +89,7 @@ const ProfileScreen = () => {
                   location={item.location.name}
                   likesAmount={item.likes}
                   onPressComments={() => {
-                    navigation.navigate("Comments");
+                    navigation.navigate("Comments", { postId: item.id });
                   }}
                   onPressMap={() => {
                     navigation.navigate("Map", { location: item.location.geo.coords });

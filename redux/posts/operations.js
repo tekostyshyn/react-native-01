@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { doc, getDoc, arrayUnion, updateDoc } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage";
-import { db, storage } from "../../config";
+import { db, storage, auth } from "../../config";
 
 export const getPosts = createAsyncThunk("posts/fetchAll", async (userId, thunkAPI) => {
   try {
@@ -38,6 +38,32 @@ export const createPost = createAsyncThunk(
         posts: arrayUnion({ ...newPost, imageUrl: url }),
       });
       return { ...newPost, imageUrl: url };
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+export const addComment = createAsyncThunk(
+  "posts/addComment",
+  async ({ userId, postId, newComment }, thunkAPI) => {
+    try {
+      const docRef = doc(db, "posts", userId);
+      const docSnap = await getDoc(docRef);
+      const allPosts = docSnap.data().posts;
+      const { photoURL } = auth.currentUser;
+      const updatedPosts = allPosts.map((post) => {
+        if (post.id === postId) {
+          console.log(post);
+          post.comments.push({ ...newComment, author: photoURL });
+        }
+        return post;
+      });
+      await updateDoc(docRef, {
+        posts: updatedPosts,
+      });
+      return updatedPosts;
     } catch (error) {
       console.log(error);
       return thunkAPI.rejectWithValue(error.message);
