@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   textWrapper: {
-    maxWidth: 320,
+    width: "100%",
     backgroundColor: "#00000008",
     borderRadius: 6,
     borderBottomLeftRadius: 0,
