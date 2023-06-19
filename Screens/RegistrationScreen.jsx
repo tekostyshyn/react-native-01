@@ -50,6 +50,7 @@ const RegistrationScreen = () => {
   const onRegister = () => {
     if (!profilePhoto) {
       Alert.alert("Please add profile photo");
+      return;
     }
     if (email && password && login && profilePhoto) {
       dispatch(
